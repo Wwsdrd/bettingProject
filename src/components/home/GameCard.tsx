@@ -1,18 +1,20 @@
 import React from "react";
-import { View, Text, TouchableOpacity, Image, ImageBackground } from "react-native";
+import { View, Text, TouchableOpacity, ImageBackground } from "react-native";
 import { Game } from "@/mock/games";
-import { radius } from "@/constants/theme";
+
+const CARD_W = 118.28;
+const CARD_H = 101.30;
+const CARD_RADIUS = 5.22;
 
 interface GameCardProps {
   game: Game;
-  size?: number;
 }
 
-export default function GameCard({ game, size = 110 }: GameCardProps) {
+export default function GameCard({ game }: GameCardProps) {
   const cardStyle = {
-    width: size,
-    height: size,
-    borderRadius: radius.lg,
+    width: CARD_W,
+    height: CARD_H,
+    borderRadius: CARD_RADIUS,
     overflow: "hidden" as const,
     marginRight: 10,
     justifyContent: "flex-end" as const,
@@ -20,7 +22,6 @@ export default function GameCard({ game, size = 110 }: GameCardProps) {
 
   const content = (
     <>
-      {/* Accent stripe — only shown when no image */}
       {!game.image && (
         <View
           style={{
@@ -34,7 +35,6 @@ export default function GameCard({ game, size = 110 }: GameCardProps) {
         />
       )}
 
-      {/* Decorative circle — only shown when no image */}
       {!game.image && (
         <View
           style={{
@@ -50,7 +50,6 @@ export default function GameCard({ game, size = 110 }: GameCardProps) {
         />
       )}
 
-      {/* Title overlay */}
       <View style={{ padding: 8, backgroundColor: "rgba(0,0,0,0.45)" }}>
         <Text
           style={{ color: "#fff", fontSize: 11, fontWeight: "700", lineHeight: 14 }}
@@ -67,8 +66,9 @@ export default function GameCard({ game, size = 110 }: GameCardProps) {
       <TouchableOpacity style={cardStyle} activeOpacity={0.85}>
         <ImageBackground
           source={game.image}
-          style={{ flex: 1, justifyContent: "flex-end" }}
+          style={{ width: CARD_W, height: CARD_H, justifyContent: "flex-end" }}
           resizeMode="cover"
+          imageStyle={{ width: CARD_W, height: CARD_H, borderRadius: CARD_RADIUS }}
         >
           {content}
         </ImageBackground>

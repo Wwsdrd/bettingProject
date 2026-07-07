@@ -10,15 +10,15 @@ interface PopularGamesSectionProps {
 
 export default function PopularGamesSection({ games }: PopularGamesSectionProps) {
   return (
-    <View style={{ backgroundColor: colors.bgPrimary, paddingTop: 20, paddingBottom: 20 }}>
+    <View style={{ backgroundColor: "#FFFFFF", paddingTop: 10, paddingBottom: 10 }}>
       <Text
         style={{
-          color: colors.textPrimary,
+          color: colors.textDark,
           fontSize: 13,
           fontWeight: "700",
           letterSpacing: 1.2,
           paddingHorizontal: 16,
-          marginBottom: 12,
+          marginBottom: 8,
         }}
       >
         POPULAR GAMES
@@ -29,12 +29,12 @@ export default function PopularGamesSection({ games }: PopularGamesSectionProps)
         contentContainerStyle={{ paddingHorizontal: 16 }}
       >
         {games.map((g) => (
-          <GameCard key={g.id} game={g} size={110} />
+          <GameCard key={g.id} game={g} />
         ))}
       </ScrollView>
 
       {/* Play More CTA */}
-      <TouchableOpacity style={{ alignItems: "center", marginTop: 20 }}>
+      <TouchableOpacity style={{ alignItems: "center", marginTop: 10 }}>
         <Text
           style={{
             color: colors.brandGreen,

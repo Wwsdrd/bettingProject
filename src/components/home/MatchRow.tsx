@@ -2,23 +2,38 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { LiveMatch } from "@/mock/matches";
 import { colors, radius } from "@/constants/theme";
+import { useBetSlip } from "@/context/BetSlipContext";
 
 function OddsPill({ value }: { value: number }) {
   const [selected, setSelected] = useState(false);
+  const { addBet, removeBet } = useBetSlip();
+
+  function toggle() {
+    if (selected) {
+      removeBet();
+    } else {
+      addBet();
+    }
+    setSelected((s) => !s);
+  }
+
   return (
     <TouchableOpacity
-      onPress={() => setSelected((s) => !s)}
+      onPress={toggle}
       activeOpacity={0.8}
       style={{
         flex: 1,
-        backgroundColor: selected ? colors.brandGreenDark : colors.oddsBg,
-        paddingVertical: 8,
-        borderRadius: radius.sm,
+        backgroundColor: selected ? colors.brandGoldLight : colors.oddsBg,
+        paddingVertical: 11,
+        borderTopLeftRadius: 3.46,
+        borderBottomLeftRadius: 3.46,
+        borderTopRightRadius: 3.46,
+        borderBottomRightRadius: 3.46,
         alignItems: "center",
         justifyContent: "center",
       }}
     >
-      <Text style={{ color: "#fff", fontSize: 12, fontWeight: "700" }}>
+      <Text style={{ color: selected ? colors.textDark : "#fff", fontSize: 12, fontWeight: "700" }}>
         {value.toFixed(2)}
       </Text>
     </TouchableOpacity>

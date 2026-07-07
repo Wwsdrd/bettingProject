@@ -10,15 +10,17 @@ interface HotGamesSectionProps {
 
 export default function HotGamesSection({ games }: HotGamesSectionProps) {
   return (
-    <View style={{ backgroundColor: colors.bgPrimary, paddingTop: 20, paddingBottom: 4 }}>
+    <View style={{ backgroundColor: "#FFFFFF", paddingTop: 10, paddingBottom: 2 }}>
       <Text
         style={{
-          color: colors.textPrimary,
-          fontSize: 13,
-          fontWeight: "700",
-          letterSpacing: 1.2,
-          paddingHorizontal: 16,
-          marginBottom: 12,
+          color: colors.textDark,
+          fontFamily: "Inter-SemiBold",
+          fontWeight: "600",
+          fontSize: 12,
+          lineHeight: 21.46,
+          letterSpacing: 0,
+          paddingLeft: 14,
+          marginBottom: 8,
         }}
       >
         HOT GAMES
@@ -29,7 +31,7 @@ export default function HotGamesSection({ games }: HotGamesSectionProps) {
         contentContainerStyle={{ paddingHorizontal: 16 }}
       >
         {games.map((g) => (
-          <GameCard key={g.id} game={g} size={110} />
+          <GameCard key={g.id} game={g} />
         ))}
       </ScrollView>
     </View>

@@ -1,5 +1,11 @@
-import React from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import React, { useState, useRef } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Modal,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { SvgXml } from "react-native-svg";
 import { colors } from "@/constants/theme";
 
@@ -49,21 +55,23 @@ const MORE_SVG = `<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xm
 <path d="M9.17627 10.2995L12.4078 15.8965C12.8203 16.6115 13.4953 16.6115 13.9078 15.8965L17.1393 10.299C17.5523 9.584 17.2143 9 16.3893 9H9.92627C9.10127 9 8.76327 9.5845 9.17627 10.2995Z" fill="#159A42"/>
 </svg>`;
 
-// ── Icon size (consistent across all category icons) ──────────────────────
 const ICON_SIZE = 26;
 
 interface Category {
   key: string;
   label: string;
-  isLive?: boolean;
 }
 
-const categories: Category[] = [
+// First 4 always visible; the rest appear in the More dropdown
+const VISIBLE: Category[] = [
   { key: "sport",    label: "Sport" },
   { key: "live",     label: "Live" },
   { key: "casino",   label: "Casino" },
   { key: "virtuals", label: "Virtuals" },
-  { key: "number",   label: "Number games" },
+];
+
+const HIDDEN: Category[] = [
+  { key: "number", label: "Number games" },
 ];
 
 const SVG_MAP: Record<string, string> = {
@@ -74,33 +82,27 @@ const SVG_MAP: Record<string, string> = {
   number:   NUMBER_GAMES_SVG,
 };
 
-function CategoryIcon({ cat }: { cat: Category }) {
-  return (
-    <View style={{ width: ICON_SIZE, height: ICON_SIZE, alignItems: "center", justifyContent: "center" }}>
-      <SvgXml xml={SVG_MAP[cat.key]} width={ICON_SIZE} height={ICON_SIZE} />
-    </View>
-  );
-}
+const LABEL_STYLE = {
+  fontFamily: "Roboto",
+  color: colors.textPrimary,
+  fontSize: 10,
+  fontWeight: "400" as const,
+  fontStyle: "normal" as const,
+  lineHeight: 13,
+  letterSpacing: 0,
+  textAlign: "center" as const,
+};
 
 function CategoryItem({ cat }: { cat: Category }) {
   return (
     <TouchableOpacity
-      style={{ alignItems: "center", marginHorizontal: 10, minWidth: 58 }}
+      style={{ flex: 1, alignItems: "center", paddingVertical: 7 }}
       activeOpacity={0.75}
     >
-      <View style={{ marginBottom: 6 }}>
-        <CategoryIcon cat={cat} />
+      <View style={{ marginBottom: 6, width: ICON_SIZE, height: ICON_SIZE, alignItems: "center", justifyContent: "center" }}>
+        <SvgXml xml={SVG_MAP[cat.key]} width={ICON_SIZE} height={ICON_SIZE} />
       </View>
-      <Text
-        style={{
-          color: colors.textSecondary,
-          fontSize: 11,
-          fontWeight: "700",
-          textAlign: "center",
-          lineHeight: 14,
-        }}
-        numberOfLines={2}
-      >
+      <Text style={LABEL_STYLE} numberOfLines={2}>
         {cat.label}
       </Text>
     </TouchableOpacity>
@@ -108,6 +110,17 @@ function CategoryItem({ cat }: { cat: Category }) {
 }
 
 export default function CategoryNav() {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const moreRef = useRef<View>(null);
+  const [dropdownPos, setDropdownPos] = useState({ top: 0, right: 0 });
+
+  function openDropdown() {
+    moreRef.current?.measureInWindow((x, y, width, height) => {
+      setDropdownPos({ top: y + height, right: 8 });
+      setDropdownOpen(true);
+    });
+  }
+
   return (
     <View
       style={{
@@ -116,30 +129,81 @@ export default function CategoryNav() {
         borderBottomColor: colors.border,
       }}
     >
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ paddingVertical: 7, paddingHorizontal: 6 }}
-      >
-        {categories.map((cat) => (
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        {/* Fixed visible categories — each takes equal width */}
+        {VISIBLE.map((cat) => (
           <CategoryItem key={cat.key} cat={cat} />
         ))}
 
-        {/* More button with Figma chevron */}
+        {/* More button */}
         <TouchableOpacity
-          style={{
-            alignItems: "center",
-            marginHorizontal: 10,
-            minWidth: 36,
-            justifyContent: "center",
-          }}
+          ref={moreRef as any}
+          onPress={openDropdown}
+          style={{ flex: 1, alignItems: "center", paddingVertical: 7 }}
+          activeOpacity={0.75}
         >
           <View style={{ marginBottom: 6, width: ICON_SIZE, height: ICON_SIZE, alignItems: "center", justifyContent: "center" }}>
             <SvgXml xml={MORE_SVG} width={ICON_SIZE} height={ICON_SIZE} />
           </View>
-          <Text style={{ color: colors.textSecondary, fontSize: 11, fontWeight: "700" }}>More</Text>
+          <Text style={LABEL_STYLE}>More</Text>
         </TouchableOpacity>
-      </ScrollView>
+      </View>
+
+      {/* Dropdown overlay */}
+      <Modal
+        visible={dropdownOpen}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setDropdownOpen(false)}
+      >
+        <TouchableWithoutFeedback onPress={() => setDropdownOpen(false)}>
+          <View style={{ flex: 1 }}>
+            <View
+              style={{
+                position: "absolute",
+                top: dropdownPos.top,
+                right: dropdownPos.right,
+                backgroundColor: "#3C3C44",
+                borderRadius: 8,
+                paddingVertical: 4,
+                minWidth: 160,
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.3,
+                shadowRadius: 8,
+                elevation: 8,
+              }}
+            >
+              {HIDDEN.map((cat) => (
+                <TouchableOpacity
+                  key={cat.key}
+                  onPress={() => setDropdownOpen(false)}
+                  activeOpacity={0.75}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 12,
+                    paddingHorizontal: 16,
+                    paddingVertical: 12,
+                  }}
+                >
+                  <SvgXml xml={SVG_MAP[cat.key]} width={22} height={22} />
+                  <Text
+                    style={{
+                      fontFamily: "Roboto",
+                      color: colors.textPrimary,
+                      fontSize: 13,
+                      fontWeight: "500",
+                    }}
+                  >
+                    {cat.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
     </View>
   );
 }

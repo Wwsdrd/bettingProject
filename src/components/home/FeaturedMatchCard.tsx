@@ -11,6 +11,7 @@ import {
 import { CircleDot, Calendar } from "lucide-react-native";
 import { FeaturedMatch } from "@/mock/matches";
 import { colors, radius, shadows } from "@/constants/theme";
+import { useBetSlip } from "@/context/BetSlipContext";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const CARD_WIDTH = SCREEN_WIDTH - 32;
@@ -19,20 +20,34 @@ const MS_PER_CARD = 4000; // ms to scroll one card width — raise to slow down
 
 function OddsButton({ value }: { value: number }) {
   const [selected, setSelected] = useState(false);
+  const { addBet, removeBet } = useBetSlip();
+
+  function toggle() {
+    if (selected) {
+      removeBet();
+    } else {
+      addBet();
+    }
+    setSelected((s) => !s);
+  }
+
   return (
     <TouchableOpacity
-      onPress={() => setSelected((s) => !s)}
+      onPress={toggle}
       activeOpacity={0.8}
       style={{
         flex: 1,
-        backgroundColor: selected ? colors.brandGreenDark : colors.oddsBg,
+        backgroundColor: selected ? colors.brandGoldLight : colors.oddsBg,
         paddingVertical: 9,
-        borderRadius: radius.md,
+        borderTopLeftRadius: 3.46,
+        borderBottomLeftRadius: 3.46,
+        borderTopRightRadius: 3.46,
+        borderBottomRightRadius: 3.46,
         alignItems: "center",
         justifyContent: "center",
       }}
     >
-      <Text style={{ color: "#FFFFFF", fontWeight: "700", fontSize: 15, letterSpacing: 0.3 }}>
+      <Text style={{ color: selected ? colors.textDark : "#FFFFFF", fontWeight: "700", fontSize: 15, letterSpacing: 0.3 }}>
         {value.toFixed(2)}
       </Text>
     </TouchableOpacity>

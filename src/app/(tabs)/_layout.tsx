@@ -1,5 +1,5 @@
 import { Tabs } from "expo-router";
-import { Dimensions } from "react-native";
+import { ColorValue, Dimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Path } from "react-native-svg";
 import { colors } from "@/constants/theme";
@@ -7,7 +7,7 @@ import { colors } from "@/constants/theme";
 const { width: SCREEN_W } = Dimensions.get("window");
 const isSmallScreen = SCREEN_W < 360;
 
-function HomeIcon({ color }: { color: string }) {
+function HomeIcon({ color }: { color: ColorValue }) {
   return (
     <Svg width="18" height="18" viewBox="0 0 18 18" fill="none">
       <Path
@@ -18,7 +18,7 @@ function HomeIcon({ color }: { color: string }) {
   );
 }
 
-function MenuIcon({ color }: { color: string }) {
+function MenuIcon({ color }: { color: ColorValue }) {
   return (
     <Svg width="18" height="18" viewBox="0 0 18 18" fill="none">
       <Path
@@ -32,7 +32,7 @@ function MenuIcon({ color }: { color: string }) {
   );
 }
 
-function GamesIcon({ color }: { color: string }) {
+function GamesIcon({ color }: { color: ColorValue }) {
   return (
     <Svg width="18" height="18" viewBox="0 0 18 18" fill="none">
       <Path
@@ -43,7 +43,7 @@ function GamesIcon({ color }: { color: string }) {
   );
 }
 
-function TicketIcon({ color }: { color: string }) {
+function TicketIcon({ color }: { color: ColorValue }) {
   return (
     <Svg width="18" height="18" viewBox="0 0 18 18" fill="none">
       <Path
@@ -54,7 +54,7 @@ function TicketIcon({ color }: { color: string }) {
   );
 }
 
-function ProfileIcon({ color }: { color: string }) {
+function ProfileIcon({ color }: { color: ColorValue }) {
   return (
     <Svg width="18" height="18" viewBox="0 0 18 18" fill="none">
       <Path
@@ -69,8 +69,10 @@ function ProfileIcon({ color }: { color: string }) {
 
 export default function TabsLayout() {
   const insets = useSafeAreaInsets();
-  const bottomPad = Math.max(insets.bottom, 8);
-  const tabBarHeight = 50 + bottomPad;
+  // Add 16px on top of whatever the safe area reports so the system nav bar
+  // never overlaps the tab bar — handles both gesture nav and 3-button nav.
+  const bottomPad = Math.max(insets.bottom, 16) + 16;
+  const tabBarHeight = 56 + bottomPad;
 
   return (
     <Tabs

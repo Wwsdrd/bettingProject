@@ -80,7 +80,7 @@ function SpinningStar({ active }: { active: boolean }) {
 
   return (
     <Animated.View style={{ transform: [{ rotate }] }}>
-      <SvgXml xml={STAR_SVG} width={13} height={12} />
+      <SvgXml xml={STAR_SVG} width={18} height={17} />
     </Animated.View>
   );
 }
@@ -109,7 +109,7 @@ function SectionTabBar({
         flexDirection: "row",
         alignItems: "center",
         paddingHorizontal: 16,
-        paddingVertical: 10,
+        height: 56,
         borderBottomWidth: 1,
         borderBottomColor: colors.border,
       }}
@@ -133,17 +133,22 @@ function SectionTabBar({
 
             <TouchableOpacity
               onPress={() => onSelect(tab)}
-              style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 3,
+              }}
             >
-              {/* Spinning star replaces the old dot on the Live tab */}
               {tab === "Live" && <SpinningStar active={isActive} />}
               <Text
                 style={{
+                  fontFamily: "Inter",
+                  fontSize: 16,
+                  fontWeight: "600",
+                  letterSpacing: 0,
                   color: isActive
                     ? tab === "Live" ? colors.brandGreen : colors.textPrimary
                     : colors.textSecondary,
-                  fontSize: 14,
-                  fontWeight: "700",
                 }}
               >
                 {tab}
@@ -182,14 +187,15 @@ function SportFilterRow({
             style={{
               flexDirection: "row",
               alignItems: "center",
-              gap: 5,
-              paddingHorizontal: 12,
-              paddingVertical: 6,
-              borderRadius: 0,
+              gap: 7.51,
+              width: 93.03,
+              height: 30.52,
+              borderRadius: 3.75,
+              padding: 7.51,
               backgroundColor: isActive ? colors.brandGreen : "transparent",
             }}
           >
-            <SvgXml xml={SPORT_ICON[sport]} width={15} height={15} />
+            <SvgXml xml={SPORT_ICON[sport]} width={19} height={19} />
             <Text
               style={{
                 color: isActive ? "#fff" : colors.textSecondary,
@@ -242,9 +248,12 @@ function MarketFilterRow({
           >
             <Text
               style={{
-                color: isActive ? colors.textPrimary : colors.textSecondary,
-                fontSize: 12,
-                fontWeight: "700",
+                color: colors.textPrimary,
+                fontFamily: "Inter",
+                fontWeight: "500",
+                fontSize: 12.42,
+                lineHeight: 12.42,
+                letterSpacing: 0,
               }}
             >
               {market}
@@ -269,11 +278,22 @@ function ColumnHeaders() {
         borderBottomColor: colors.border,
       }}
     >
-      {/* "Today" spans the minute + team area */}
-      <View style={{ width: 30, marginRight: 8 }} />
-      <Text style={{ flex: 1, color: colors.textSecondary, fontSize: 13, fontWeight: "800" }}>Today</Text>
-      {/* 1 / X / 2 align exactly with the three OddsPill widths (150px total) */}
-      <View style={{ flexDirection: "row", width: 150, gap: 4 }}>
+      {/* small spacer — keeps Today near the left edge */}
+      <View style={{ width: 8 }} />
+      <Text
+        style={{
+          flex: 1,
+          color: colors.textSecondary,
+          fontSize: 10,
+          fontWeight: "700",
+          lineHeight: 20.31,
+          textAlignVertical: "center",
+        }}
+      >
+        Today
+      </Text>
+      {/* 1 / X / 2 aligned to the three OddsPill columns */}
+      <View style={{ flexDirection: "row", width: 235.6, gap: 20.1 }}>
         {["1", "X", "2"].map((h) => (
           <Text
             key={h}
@@ -281,8 +301,10 @@ function ColumnHeaders() {
               flex: 1,
               textAlign: "center",
               color: colors.textSecondary,
-              fontSize: 13,
-              fontWeight: "800",
+              fontSize: 10.83,
+              fontWeight: "700",
+              lineHeight: 13.54,
+              textAlignVertical: "center",
             }}
           >
             {h}
